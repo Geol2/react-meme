@@ -1,11 +1,11 @@
+import { useState } from "react";
+
 import TaskAppender from "./Components/TaskAppender";
 import TaskHeader from "./Components/TaskHeader";
 import TaskItem from "./Components/TaskItem";
 import TaskList from "./Components/TaskList";
 
 function App() {
-  const todoName = "React Component 마스터";
-
   const tasks = [
     {
       id: "item1",
@@ -30,23 +30,49 @@ function App() {
     },
   ];
 
+  const [taskList, setTaskList] = useState(tasks);
+
+  const doneTaskHandler = (event) => {
+    // 완료처리한 task의 아이디를 가져온다.
+    const targetTaskId = event.currentTarget.value;
+    console.log(targetTaskId);
+
+    setTaskList((prevTaskList) => {
+      const newTaskList = [...prevTaskList];
+      // console.log(newTaskList);
+
+      // taskList 스테이트에서 해당 task의 인덱스를 가져온다.
+      const targetIndex = newTaskList.findIndex(
+        (taskItem) => taskItem.id === targetTaskId
+      );
+      console.log(targetIndex);
+
+      // 해당 인덱스의 done 값을 true로 바꿔준다.
+      newTaskList[targetIndex].done = true;
+
+      return newTaskList;
+    });
+  };
+
   return (
     <div className="wrapper">
       <header>React Todo</header>
       <TaskList>
         <TaskHeader />
 
-        {tasks.map((item) => (
+        {taskList.map((item) => (
           <TaskItem
+            done={item.done}
             key={item.id}
             id={item.id}
             task={item.task}
             dueDate={item.dueDate}
             priority={item.priority}
+            onDoneHandler={doneTaskHandler}
           />
         ))}
       </TaskList>
-      <TaskAppender />
+      <TaskAppender onSaveHandler={setTaskList} />
     </div>
   );
 }

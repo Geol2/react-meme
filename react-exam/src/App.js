@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import Section from "./Section";
 
 function App() {
@@ -9,15 +11,25 @@ function App() {
     alert("Hover!");
   };
 
+  const [title, setTitle] = useState("Untitle");
+
+  const onKeyUpHandler = (event) => {
+    const value = event.currentTarget.value;
+
+    // title state의 값을 변경
+    setTitle(value);
+  };
+
   return (
     <div>
+      <input type="text" onKeyUp={onKeyUpHandler} />
       <Section
         onMouseEnter={onHoverFirstSectionHandler}
-        title="Props Section Component"
+        title={title}
         color="#00F"
         bgColor="#FF0"
       />
-      <Section title="Props Component" color="#333" bgColor="#F00" />
+      <Section title={title} color="#333" bgColor="#F00" />
       <Section color="#0F0" bgColor="#0FF" />
       <Section onMouseEnter={onHoverLastSectionHandler}>
         <h1>Ths is Children Element</h1>
