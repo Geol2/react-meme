@@ -1,7 +1,8 @@
-import { useRef, useState } from "react";
+import { useRef, useState, memo } from "react";
 import Alert from "./modal/Modal";
 
-export default function TaskAppender({ onButtonClick }) {
+export default memo(function TaskAppender({ onButtonClick }) {
+  console.log("Run TaskAppender Component");
   const taskRef = useRef();
   const dueDateRef = useRef();
   const priorityRef = useRef();
@@ -56,4 +57,4 @@ export default function TaskAppender({ onButtonClick }) {
       </Alert>
     </>
   );
-}
+});

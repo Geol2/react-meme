@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState, useMemo } from "react";
 import TaskAppender from "./Components/TaskAppender";
 import TaskList from "./Components/TaskList";
 import Confirm from "./Components/modal/Confirm";
@@ -35,7 +35,14 @@ function App() {
     },
   ]);
 
-  const addNewTodoHandler = (task, dueDate, priority) => {
+  const taskCount = useMemo(() => {
+    return {
+      done: todoLists.filter((item) => item.done).length,
+      process: todoLists.filter((item) => !item.done).length,
+    };
+  }, [todoLists]);
+
+  const addNewTodoHandler = useCallback((task, dueDate, priority) => {
     setTodoList((prevTodoList) => {
       const newTodoList = [...prevTodoList];
       newTodoList.push({
@@ -47,18 +54,20 @@ function App() {
       });
       return newTodoList;
     });
-  };
+  }, []);
 
-  const doneTodoHandler = (event) => {
+  const doneTodoHandler = useCallback((event) => {
+    console.log("Run doneTodoHandler");
     const todoId = event.currentTarget.value;
     setAllDoneConfirmMessage(
       `${todoId} task를 완료할까요? 이 작업은 되돌릴 수 없습니다.`
     );
     doneConfirmRef.current.open();
     doneConfirmRef.todoId = todoId;
-  };
+  }, []);
 
   const doneTodoItemHandler = () => {
+    console.log("Run doneTodoItemHandler");
     setTodoList((prevTodoList) => {
       const newTodoList = [...prevTodoList];
 
@@ -74,7 +83,7 @@ function App() {
     doneConfirmRef.current.close();
   };
 
-  const doneAllTodoHandler = (event) => {
+  const doneAllTodoHandler = useCallback((event) => {
     const processingTodoLength = todoLists.filter((todo) => !todo.done).length;
     if (event.currentTarget.checked && processingTodoLength === 0) {
       setAlertMessage("완료할 Task가 없습니다.");
@@ -91,9 +100,9 @@ function App() {
 
       allDoneConfirmRef.current.open();
     }
-  };
+  }, []);
 
-  const allDoneOkHandler = () => {
+  const allDoneOkHandler = useCallback(() => {
     setTodoList((prevTodoList) => {
       const newTodoList = [...prevTodoList];
 
@@ -105,14 +114,17 @@ function App() {
     });
 
     allDoneConfirmRef.current.close();
-  };
+  }, []);
 
   return (
     <>
       <div className="wrapper">
         <header>React Todo</header>
         <TaskList>
-          <TaskList.TaskHeader onCheckboxClick={doneAllTodoHandler} />
+          <TaskList.TaskHeader
+            taskCount={taskCount}
+            onCheckboxClick={doneAllTodoHandler}
+          />
           {todoLists.map((item) => (
             <TaskList.TaskItem
               key={item.id}

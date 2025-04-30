@@ -1,11 +1,14 @@
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import Alert from "./modal/Modal";
+import { TaskContext } from "../Contexts/TaskContext";
 
-export default function TaskAppender({ onButtonClick }) {
+export default function TaskAppender() {
   const taskRef = useRef();
   const dueDateRef = useRef();
   const priorityRef = useRef();
   const alertRef = useRef();
+
+  const { add } = useContext(TaskContext);
 
   const [modalMessage, setModalMessage] = useState();
 
@@ -27,11 +30,15 @@ export default function TaskAppender({ onButtonClick }) {
       alertRef.current.open();
       return;
     }
-    onButtonClick(
+    addNewTodoHandler(
       taskRef.current.value,
       dueDateRef.current.value,
       priorityRef.current.value
     );
+  };
+
+  const addNewTodoHandler = (task, dueDate, priority) => {
+    add(task, dueDate, priority);
   };
 
   return (

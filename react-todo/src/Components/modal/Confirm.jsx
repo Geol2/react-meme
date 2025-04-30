@@ -1,4 +1,5 @@
 import { useImperativeHandle, useRef } from "react";
+import { createPortal } from "react-dom";
 
 export default function Confirm({
   ref,
@@ -23,7 +24,7 @@ export default function Confirm({
     ref.current.close();
   };
 
-  return (
+  return createPortal(
     <dialog className="modal" ref={confirmRef}>
       <div className="modal-body">
         {children}
@@ -40,6 +41,7 @@ export default function Confirm({
           </button>
         </section>
       </div>
-    </dialog>
+    </dialog>,
+    document.querySelector("#modals")
   );
 }
