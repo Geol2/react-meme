@@ -4,16 +4,27 @@ export default function TaskItem({
   task,
   dueDate,
   priority,
-  onDoneHandler,
+  onCheckboxClick,
 }) {
   return (
     <li className="task-item">
-      <input id={id} type="checkbox" onChange={onDoneHandler} disabled={done} />
-      <label htmlFor={id} className={done ? "done-todo" : ""}>
+      <input
+        id={id}
+        type="checkbox"
+        checked={done}
+        value={id}
+        onChange={onCheckboxClick}
+        disabled={done}
+      />
+      <label htmlFor={id} className={done ? "done-todo" : undefined}>
         {task}
       </label>
-      <span className={`due-date ${done ? "done-todo" : ""}`}>{dueDate}</span>
-      <span className={`priority ${done ? "done-todo" : ""}`}>{priority}</span>
+      <span className={`due-date ${done ? "done-todo" : undefined}`}>
+        {dueDate}
+      </span>
+      <span className={`priority ${done ? "done-todo" : undefined}`}>
+        {priority}
+      </span>
     </li>
   );
 }

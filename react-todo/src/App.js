@@ -1,12 +1,19 @@
-import { useState } from "react";
-
+import { useRef, useState } from "react";
 import TaskAppender from "./Components/TaskAppender";
 import TaskHeader from "./Components/TaskHeader";
 import TaskItem from "./Components/TaskItem";
 import TaskList from "./Components/TaskList";
+import Confirm from "./Components/modal/Confirm";
+import Alert from "./Components/modal/Modal";
 
 function App() {
-  const tasks = [
+  const alertRef = useRef();
+  const allDoneConfirmRef = useRef();
+  const doneConfirmRef = useRef();
+
+  const [allDoneConfirmMessage, setAllDoneConfirmMessage] = useState();
+  const [alertMessage, setAlertMessage] = useState();
+  const [todoLists, setTodoList] = useState([
     {
       id: "item1",
       task: "React Component Master",
@@ -28,52 +35,112 @@ function App() {
       priority: 1,
       done: false,
     },
-  ];
+  ]);
 
-  const [taskList, setTaskList] = useState(tasks);
-
-  const doneTaskHandler = (event) => {
-    // 완료처리한 task의 아이디를 가져온다.
-    const targetTaskId = event.currentTarget.value;
-    console.log(targetTaskId);
-
-    setTaskList((prevTaskList) => {
-      const newTaskList = [...prevTaskList];
-      // console.log(newTaskList);
-
-      // taskList 스테이트에서 해당 task의 인덱스를 가져온다.
-      const targetIndex = newTaskList.findIndex(
-        (taskItem) => taskItem.id === targetTaskId
-      );
-      console.log(targetIndex);
-
-      // 해당 인덱스의 done 값을 true로 바꿔준다.
-      newTaskList[targetIndex].done = true;
-
-      return newTaskList;
+  const addNewTodoHandler = (task, dueDate, priority) => {
+    setTodoList((prevTodoList) => {
+      const newTodoList = [...prevTodoList];
+      newTodoList.push({
+        id: "item" + (prevTodoList.length + 1),
+        task,
+        dueDate,
+        priority,
+        done: false,
+      });
+      return newTodoList;
     });
   };
 
-  return (
-    <div className="wrapper">
-      <header>React Todo</header>
-      <TaskList>
-        <TaskHeader />
+  const doneTodoHandler = (event) => {
+    const todoId = event.currentTarget.value;
+    setAllDoneConfirmMessage(
+      `${todoId} task를 완료할까요? 이 작업은 되돌릴 수 없습니다.`
+    );
+    doneConfirmRef.current.open();
+    doneConfirmRef.todoId = todoId;
+  };
 
-        {taskList.map((item) => (
-          <TaskItem
-            done={item.done}
-            key={item.id}
-            id={item.id}
-            task={item.task}
-            dueDate={item.dueDate}
-            priority={item.priority}
-            onDoneHandler={doneTaskHandler}
-          />
-        ))}
-      </TaskList>
-      <TaskAppender onSaveHandler={setTaskList} />
-    </div>
+  const doneTodoItemHandler = () => {
+    setTodoList((prevTodoList) => {
+      const newTodoList = [...prevTodoList];
+
+      newTodoList.map((todo) => {
+        if (todo.id === doneConfirmRef.todoId) {
+          todo.done = true;
+        }
+        return todo;
+      });
+      return newTodoList;
+    });
+
+    doneConfirmRef.current.close();
+  };
+
+  const doneAllTodoHandler = (event) => {
+    const processingTodoLength = todoLists.filter((todo) => !todo.done).length;
+    if (event.currentTarget.checked && processingTodoLength === 0) {
+      setAlertMessage("완료할 Task가 없습니다.");
+      event.currentTarget.checked = false;
+      alertRef.current.open();
+      return;
+    }
+
+    if (event.currentTarget.checked) {
+      event.currentTarget.checked = false;
+      setAllDoneConfirmMessage(
+        "모든 task를 완료할까요? 이 작업은 되돌릴 수 없습니다."
+      );
+
+      allDoneConfirmRef.current.open();
+    }
+  };
+
+  const allDoneOkHandler = () => {
+    setTodoList((prevTodoList) => {
+      const newTodoList = [...prevTodoList];
+
+      newTodoList.map((todo) => {
+        todo.done = true;
+        return todo;
+      });
+      return newTodoList;
+    });
+
+    allDoneConfirmRef.current.close();
+  };
+
+  return (
+    <>
+      <div className="wrapper">
+        <header>React Todo</header>
+        <TaskList>
+          <TaskHeader onCheckboxClick={doneAllTodoHandler} />
+          {todoLists.map((item) => (
+            <TaskItem
+              key={item.id}
+              id={item.id}
+              task={item.task}
+              dueDate={item.dueDate}
+              priority={item.priority}
+              done={item.done}
+              onCheckboxClick={doneTodoHandler}
+            />
+          ))}
+        </TaskList>
+        <TaskAppender onButtonClick={addNewTodoHandler} />
+      </div>
+      <Alert ref={alertRef}>
+        <div>
+          <h3>{alertMessage}</h3>
+        </div>
+      </Alert>
+      <Confirm ref={allDoneConfirmRef} okHandler={allDoneOkHandler}>
+        <div>{allDoneConfirmMessage}</div>
+      </Confirm>
+      <Confirm ref={doneConfirmRef} okHandler={doneTodoItemHandler}>
+        <div>{allDoneConfirmMessage}</div>
+      </Confirm>
+    </>
   );
 }
 
