@@ -1,0 +1,40 @@
+.tasks-counter {
+  background-color: #fff;
+  display: flex;
+  gap: 0.625rem;
+}
+
+.tasks-header {
+  background-color: #fff;
+  font-weight: 900;
+  position: sticky;
+  top: 4.5rem;
+}
+
+.taskItem {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid #ccc;
+  padding: 1rem;
+}
+
+.checkbox {
+  display: inline-block;
+  margin-right: 0.625rem;
+}
+
+.checkbox + label {
+  flex-grow: 1;
+}
+
+.dueDate {
+  display: inline-block;
+  flex-basis: 7rem;
+  text-align: center;
+}
+
+.priority {
+  display: inline-block;
+  flex-basis: 5rem;
+  text-align: center;
+}

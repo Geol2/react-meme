@@ -1,0 +1,19 @@
+.footer {
+  margin-top: 2rem;
+  display: flex;
+  gap: 0.625rem;
+}
+.footer > input[type="text"] {
+  flex-grow: 1;
+  padding: 0.625rem;
+}
+.footer > input[type="date"] {
+  padding: 0.625rem;
+}
+.footer > select {
+  padding: 0.625rem;
+}
+
+.footer > button {
+  flex-basis: 4rem;
+}

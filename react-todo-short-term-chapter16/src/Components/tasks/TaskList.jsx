@@ -1,6 +1,11 @@
 import { createContext, memo, useContext } from "react";
 import { Link } from "react-router-dom";
 
+import headerStyle from "./TaskHeader.module.css";
+import itemStyle from "./TaskItem.module.css";
+
+console.log(itemStyle);
+
 const TaskListContext = createContext();
 
 export default function TaskList({ children }) {
@@ -25,15 +30,20 @@ TaskList.TaskHeader = memo(function TaskHeader({ taskCount, onCheckboxClick }) {
   }
   return (
     <>
-      <li className="tasks-counter">
+      <li className={`${headerStyle.taskItem} ${headerStyle["tasks-counter"]}`}>
         <div>진행중: {taskCount.process}</div>
         <div>완료: {taskCount.done}</div>
       </li>
-      <li className="tasks-header">
-        <input id="checkall" type="checkbox" onChange={onCheckboxClick} />
+      <li className={`${headerStyle.taskItem} ${headerStyle["tasks-header"]}`}>
+        <input
+          className={headerStyle.checkbox}
+          id="checkall"
+          type="checkbox"
+          onChange={onCheckboxClick}
+        />
         <label>Task</label>
-        <span className="due-date">Due date</span>
-        <span className="priority">Priority</span>
+        <span className={headerStyle.dueDate}>Due date</span>
+        <span className={headerStyle.priority}>Priority</span>
       </li>
     </>
   );
@@ -48,8 +58,9 @@ function TaskItem({ done, id, task, dueDate, priority, onCheckboxClick }) {
     throw new Error("TaskItem 컴포넌트는 TaskList 내부에 위치해야 합니다.");
   }
   return (
-    <li className="task-item">
+    <li className={itemStyle.taskItem}>
       <input
+        className={itemStyle.checkbox}
         id={id}
         type="checkbox"
         checked={done}
@@ -60,10 +71,14 @@ function TaskItem({ done, id, task, dueDate, priority, onCheckboxClick }) {
       <label htmlFor={id} className={done ? "done-todo" : undefined}>
         <Link to={`/todo/${id}`}>{task}</Link>
       </label>
-      <span className={`due-date ${done ? "done-todo" : undefined}`}>
+      <span
+        className={`${itemStyle.dueDate} ${done ? "done-todo" : undefined}`}
+      >
         {dueDate}
       </span>
-      <span className={`priority ${done ? "done-todo" : undefined}`}>
+      <span
+        className={`${itemStyle.priority} ${done ? "done-todo" : undefined}`}
+      >
         {priority}
       </span>
     </li>

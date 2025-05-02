@@ -1,6 +1,8 @@
 import { memo, useRef, useState } from "react";
 import Alert from "../modal/Modal";
 
+import footerStyle from "./TaskAppender.module.css";
+
 export default memo(function TaskAppender({ onButtonClick }) {
   console.log("-- Call [TaskAppender] Component");
   console.log("-- Rendered [TaskAppender] Component");
@@ -39,7 +41,7 @@ export default memo(function TaskAppender({ onButtonClick }) {
 
   return (
     <>
-      <footer>
+      <footer className={footerStyle.footer}>
         <input type="text" placeholder="Task" ref={taskRef} />
         <input type="date" ref={dueDateRef} />
         <select ref={priorityRef}>

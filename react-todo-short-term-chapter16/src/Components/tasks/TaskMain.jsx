@@ -7,6 +7,8 @@ import taskReducers, { actionType } from "../../reducers/TaskReducers";
 import { addTask, allDoneTasks, doneTask, loadTasks } from "../../http/http";
 import { useFetch } from "../../hooks/useFetch";
 
+import mainStyle from "./TaskMain.module.css";
+
 const TaskMain = () => {
   console.log("Call [TaskMain] Component");
   console.log("Rendered [TaskMain] Component");
@@ -130,7 +132,7 @@ const TaskMain = () => {
   return (
     <>
       <div className="wrapper">
-        <header>React Todo</header>
+        <header className={mainStyle.header}>React Todo</header>
         <TaskList>
           <TaskList.TaskHeader
             taskCount={taskCount}
